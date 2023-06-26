@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Post('/order')
+  @Post('/order2')
   processOrder(@Body() body): any {
     return this.appService.processOrder(body);
   }
