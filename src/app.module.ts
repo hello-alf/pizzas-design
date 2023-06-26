@@ -5,10 +5,19 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 
+import { environments } from './environments';
+import { OrdersModule } from './orders/orders.module';
+import config from './config';
+
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    ConfigModule.forRoot({
+      envFilePath: environments[process.env.NODE_ENV] || '.env',
+      load: [config],
+      isGlobal: true,
+    }),
     DatabaseModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
