@@ -4,7 +4,7 @@ import { CreateOrderDto } from '../dtos/order.dtos';
 
 @Controller('order')
 export class OrdersController {
-  constructor(private readonly orederService: OrdersService) {}
+  constructor(private readonly orderService: OrdersService) {}
 
   @Get()
   findAll(): string {
@@ -13,6 +13,6 @@ export class OrdersController {
 
   @Post()
   create(@Body() payload: CreateOrderDto) {
-    return this.orederService.create(payload);
+    return this.orderService.create(payload);
   }
 }
