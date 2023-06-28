@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { environments } from './environments';
 import { OrdersModule } from './orders/orders.module';
+import { MenuModule } from './menu/menu.module';
 import config from './config';
 
 @Module({
@@ -18,6 +19,7 @@ import config from './config';
     }),
     DatabaseModule,
     OrdersModule,
+    MenuModule,
   ],
   controllers: [AppController],
   providers: [AppService],
