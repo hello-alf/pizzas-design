@@ -19,8 +19,8 @@ export class Order extends Document {
   @Prop({ required: true })
   fullNameCustomer: string;
 
-  @Prop({ type: [DetailSchema] })
-  detail: Types.Array<Detail>;
+  @Prop({ type: [{ type: Types.ObjectId, ref: Detail.name }] })
+  details: Types.Array<Detail>;
 
   @Prop({ required: true })
   state: string;
