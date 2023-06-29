@@ -1,11 +1,4 @@
-import {
-  IsString,
-  IsNumber,
-  IsNotEmpty,
-  IsPositive,
-  IsArray,
-  ValidateNested,
-} from 'class-validator';
+import { IsString, IsNotEmpty, IsArray, ValidateNested } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { CreateDetailDto } from './detail.dtos';
@@ -15,22 +8,6 @@ export class CreateOrderDto {
   @IsNotEmpty()
   @ApiProperty({ description: `customer's name` })
   readonly fullNameCustomer: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  @IsPositive()
-  @ApiProperty()
-  readonly totalPrice: number;
-
-  @IsNumber()
-  @IsNotEmpty()
-  @ApiProperty()
-  readonly discount: number;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
-  readonly state: string;
 
   @IsArray()
   @IsNotEmpty()

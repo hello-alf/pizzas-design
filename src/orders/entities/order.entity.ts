@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { Document } from 'mongoose';
+import { now, Document } from 'mongoose';
 import { Detail } from './detail.entity';
 
 @Schema()
@@ -25,8 +25,11 @@ export class Order extends Document {
   @Prop({ required: true })
   state: string;
 
-  @Prop({ type: Date })
+  @Prop({ type: Date, default: now() })
   createdAt: Date;
+
+  @Prop({ type: Date, default: now() })
+  updatedAt: Date;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

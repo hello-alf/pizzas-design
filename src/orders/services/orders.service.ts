@@ -12,7 +12,18 @@ export class OrdersService {
   create(data: CreateOrderDto) {
     console.log('first', data);
     const deliveryPrice = 15;
-    const newOrder = new this.orderModel({ ...data, deliveryPrice });
+    const discount = 0;
+    const state = 'PENDING';
+    const totalPrice = 120;
+
+    const newOrder = new this.orderModel({
+      ...data,
+      deliveryPrice,
+      discount,
+      state,
+      totalPrice,
+    });
+
     return newOrder.save();
   }
 }
