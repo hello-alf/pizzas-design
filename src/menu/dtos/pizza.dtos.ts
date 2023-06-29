@@ -2,8 +2,9 @@ import {
   IsString,
   IsEnum,
   IsNotEmpty,
-  IsPositive,
   IsArray,
+  IsNumber,
+  IsPositive,
 } from 'class-validator';
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import Size from '../enums/size.enum';
@@ -23,6 +24,12 @@ export class CreatePizzaDto {
   @IsNotEmpty()
   @ApiProperty()
   readonly ingredients: string[];
+
+  @IsNumber()
+  @IsNotEmpty()
+  @IsPositive()
+  @ApiProperty()
+  readonly unitPrice: number;
 }
 
 export class UpdatePizzaDto extends PartialType(CreatePizzaDto) {}

@@ -13,6 +13,9 @@ export class Pizza extends Document {
 
   @Prop({ type: Array, required: true })
   ingredients: Types.Array<string>;
+
+  @Prop({ type: Number, required: true })
+  unitPrice: number;
 }
 
 export const PizzaSchema = SchemaFactory.createForClass(Pizza);

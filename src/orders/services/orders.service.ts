@@ -10,6 +10,7 @@ export class OrdersService {
   constructor(@InjectModel(Order.name) private orderModel: Model<Order>) {}
 
   create(data: CreateOrderDto) {
+    console.log('first', data);
     const deliveryPrice = 15;
     const newOrder = new this.orderModel({ ...data, deliveryPrice });
     return newOrder.save();
