@@ -1,16 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { OrderState } from '../interface/orderState.interface';
 import PendingState from './pendingState.class';
-// import PaymentCompleteState from './paymentCompleteState.class';
 import OrderEnum from '../enums/orderEnum.enum';
-import PaymentCompleteState from './paymentCompleteState.class';
-import CancelState from './cancelState.class';
+import { OrderRepository } from '../repository/order.repository';
 
 @Injectable()
 class StateManager {
   private orderState: OrderState;
   private nameState: OrderEnum;
   private orderId: string;
+
+  constructor(private orderRepository: OrderRepository) {}
 
   pending(): any {
     this.setState(new PendingState(this), null);
@@ -26,11 +26,21 @@ class StateManager {
     this.orderState.cancel();
   }
 
-  setState(state: OrderState, orderId?: string): void {
-    console.log('orderId', orderId);
+  async setState(state: OrderState, orderId?: string): Promise<any> {
+    let order = {};
+    if (orderId !== undefined && orderId !== null) {
+      order = await this.orderRepository.findOneById(orderId);
+
+      if (order === null) {
+        throw new BadRequestException(`La orden ${orderId} no existe`);
+      }
+    }
+
     this.orderState = state;
     this.nameState = this.orderState.getName();
     this.orderId = orderId;
+
+    return order;
   }
 
   getNameState(): OrderEnum {
