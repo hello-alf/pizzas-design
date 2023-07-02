@@ -7,6 +7,8 @@ import { OrdersController } from './controller/order.controller';
 import StateManager from './classes/stateManager.class';
 import { OrderRepository } from './repositories/order.repository';
 import { OrdersStateService } from './services/orders-state.service';
+import { DiscountModule } from 'src/discount/discount.module';
+// import { DeliveryService } from 'src/discount/services/delivery.service';
 
 @Module({
   imports: [
@@ -20,12 +22,14 @@ import { OrdersStateService } from './services/orders-state.service';
         schema: DetailSchema,
       },
     ]),
+    DiscountModule,
   ],
   providers: [
     OrdersService,
     { provide: StateManager, useClass: StateManager },
     OrderRepository,
     OrdersStateService,
+    // DeliveryService,
   ],
   controllers: [OrdersController],
 })

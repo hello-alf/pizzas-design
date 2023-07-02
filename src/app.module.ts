@@ -10,6 +10,7 @@ import { OrdersModule } from './orders/orders.module';
 import { MenuModule } from './menu/menu.module';
 import config from './config';
 import { DatabaseInitializer } from './database/initialize';
+import { DiscountModule } from './discount/discount.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { DatabaseInitializer } from './database/initialize';
     DatabaseModule,
     OrdersModule,
     MenuModule,
+    DiscountModule,
   ],
   controllers: [AppController],
   providers: [AppService, DatabaseInitializer],

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -9,11 +9,14 @@ import StateManager from '../classes/stateManager.class';
 import OrderEnum from '../enums/orderEnum.enum';
 import { OrderRepository } from '../repositories/order.repository';
 import { OrdersStateService } from './orders-state.service';
+import { DeliveryService } from '../../discount/services/delivery.service';
+import { DeliveryStrategy } from 'src/discount/classes/delivery.strategy';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectModel(Order.name) private orderModel: Model<Order>,
+    @Inject(DeliveryService) private deliveryService: DeliveryService,
     private orderRepository: OrderRepository,
     private stateManager: StateManager,
     private ordersStateService: OrdersStateService,
@@ -24,8 +27,11 @@ export class OrdersService {
   }
 
   create(data: CreateOrderDto) {
-    const deliveryPrice = 15;
+    this.deliveryService.setStrategy(new DeliveryStrategy());
+
     const discount = 0;
+
+    const deliveryPrice = this.deliveryService.applyPromo();
 
     this.stateManager.pending();
     const state = this.stateManager.getNameState();
@@ -69,12 +75,10 @@ export class OrdersService {
       payload,
     );
 
-    if (orderCancelled === null) {
-      throw new NotFoundException(
-        `La orden ${order} ya fue cancelada, o no existe`,
-      );
-    }
-
     return orderCancelled;
+  }
+
+  calculateOrderTotal(): number {
+    return 0;
   }
 }
