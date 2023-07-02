@@ -5,10 +5,14 @@ import { Model } from 'mongoose';
 import { Order } from '../entities/order.entity';
 import { CreateOrderDto } from '../dtos/order.dtos';
 import { OrderIdentifierDto } from '../dtos/orderIdentifier.dtos';
+import StateManager from '../classes/stateManager.class';
 
 @Injectable()
 export class OrdersService {
-  constructor(@InjectModel(Order.name) private orderModel: Model<Order>) {}
+  constructor(
+    @InjectModel(Order.name) private orderModel: Model<Order>,
+    private stateManager: StateManager,
+  ) {}
 
   findAll() {
     return this.orderModel.find().exec();
@@ -17,7 +21,21 @@ export class OrdersService {
   create(data: CreateOrderDto) {
     const deliveryPrice = 15;
     const discount = 0;
-    const state = 'PENDING';
+
+    this.stateManager.pending();
+    let state = this.stateManager.getNameState();
+    console.log('state', state);
+
+    this.stateManager.paymentComplete();
+    state = this.stateManager.getNameState();
+    console.log('state', state);
+
+    this.stateManager.cancel();
+    state = this.stateManager.getNameState();
+    console.log('state', state);
+
+    this.stateManager.cancel();
+
     const totalPrice = 120;
 
     const newOrder = new this.orderModel({

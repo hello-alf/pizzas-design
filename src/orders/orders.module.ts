@@ -4,6 +4,7 @@ import { Order, OrderSchema } from './entities/order.entity';
 import { Detail, DetailSchema } from './entities/detail.entity';
 import { OrdersService } from './services/orders.service';
 import { OrdersController } from './controller/order.controller';
+import StateManager from './classes/stateManager.class';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { OrdersController } from './controller/order.controller';
       },
     ]),
   ],
-  providers: [OrdersService],
+  providers: [OrdersService, { provide: StateManager, useClass: StateManager }],
   controllers: [OrdersController],
 })
 export class OrdersModule {}
