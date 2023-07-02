@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -6,6 +10,8 @@ import { Order } from '../entities/order.entity';
 import { CreateOrderDto } from '../dtos/order.dtos';
 import { OrderIdentifierDto } from '../dtos/orderIdentifier.dtos';
 import StateManager from '../classes/stateManager.class';
+import PaymentCompleteState from '../classes/paymentCompleteState.class';
+import OrderEnum from '../enums/orderEnum.enum';
 
 @Injectable()
 export class OrdersService {
@@ -23,18 +29,18 @@ export class OrdersService {
     const discount = 0;
 
     this.stateManager.pending();
-    let state = this.stateManager.getNameState();
-    console.log('state', state);
+    const state = this.stateManager.getNameState();
+    console.log('state pending', state);
 
-    this.stateManager.paymentComplete();
-    state = this.stateManager.getNameState();
-    console.log('state', state);
+    // this.stateManager.paymentComplete();
+    // state = this.stateManager.getNameState();
+    // console.log('state', state);
 
-    this.stateManager.cancel();
-    state = this.stateManager.getNameState();
-    console.log('state', state);
+    // this.stateManager.cancel();
+    // state = this.stateManager.getNameState();
+    // console.log('state', state);
 
-    this.stateManager.cancel();
+    // this.stateManager.cancel();
 
     const totalPrice = 120;
 
@@ -52,23 +58,29 @@ export class OrdersService {
   async pay(data: OrderIdentifierDto) {
     const { order } = data;
 
-    const payload = { state: 'PAYMENT_COMPLETE' };
+    const orderToPay = await this.orderModel.findOne({ _id: order }).exec();
 
-    const orderToPay = await this.orderModel
+    if (!orderToPay) {
+      throw new NotFoundException(`La orden ${order} no existe`);
+    }
+
+    const payload = this.markOrderAsPaid(orderToPay.id);
+
+    const orderUpdated = await this.orderModel
       .findOneAndUpdate(
-        { _id: order, state: 'PENDING' },
+        { _id: order, state: OrderEnum.PENDING },
         { $set: payload },
         { new: true },
       )
       .exec();
 
-    if (orderToPay === null) {
+    if (orderUpdated === null) {
       throw new NotFoundException(
         `La orden ${order} ya fue pagada, o no existe`,
       );
     }
 
-    return orderToPay;
+    return orderUpdated;
   }
 
   async cancel(data: OrderIdentifierDto) {
@@ -78,7 +90,10 @@ export class OrdersService {
 
     const orderToCancel = await this.orderModel
       .findOneAndUpdate(
-        { _id: order, state: { $in: ['PENDING', 'PAYMENT_COMPLETE'] } },
+        {
+          _id: order,
+          state: { $in: [OrderEnum.PENDING, OrderEnum.PAYMENT_COMPLETE] },
+        },
         { $set: payload },
         { new: true },
       )
@@ -91,5 +106,16 @@ export class OrdersService {
     }
 
     return orderToCancel;
+  }
+
+  markOrderAsPaid(orderId: string) {
+    this.stateManager.setState(
+      new PaymentCompleteState(this.stateManager),
+      orderId,
+    );
+
+    const state = this.stateManager.getNameState();
+
+    return { state };
   }
 }

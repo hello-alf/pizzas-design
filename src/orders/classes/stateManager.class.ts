@@ -10,13 +10,12 @@ import CancelState from './cancelState.class';
 class StateManager {
   private orderState: OrderState;
   private nameState: OrderEnum;
-
-  // constructor(private readonly paymentState: PaymentCompleteState) {}
+  private orderId: string;
 
   pending(): any {
-    this.setState(new PendingState(this));
-    // this.orderState = new PendingState(this);
+    this.setState(new PendingState(this), null);
     this.nameState = OrderEnum.PENDING;
+    this.orderId = '';
   }
 
   paymentComplete(): void {
@@ -27,13 +26,19 @@ class StateManager {
     this.orderState.cancel();
   }
 
-  setState(state: OrderState): void {
+  setState(state: OrderState, orderId?: string): void {
+    console.log('orderId', orderId);
     this.orderState = state;
     this.nameState = this.orderState.getName();
+    this.orderId = orderId;
   }
 
   getNameState(): OrderEnum {
     return this.nameState;
+  }
+
+  getOrderId(): string {
+    return this.orderId;
   }
 }
 

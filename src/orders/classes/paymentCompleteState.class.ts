@@ -6,6 +6,10 @@ import StateManager from './stateManager.class';
 class PaymentCompleteState implements OrderState {
   constructor(private stateManager: StateManager) {}
 
+  getOrderId(): string {
+    return this.stateManager.getOrderId();
+  }
+
   getName(): OrderEnum {
     return OrderEnum.PAYMENT_COMPLETE;
   }

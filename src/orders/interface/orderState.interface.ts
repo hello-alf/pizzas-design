@@ -5,4 +5,5 @@ export interface OrderState {
   paymentComplete(): void;
   cancel(): void;
   getName(): OrderEnum;
+  getOrderId(): string;
 }

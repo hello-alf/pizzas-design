@@ -7,6 +7,10 @@ import CancelState from './cancelState.class';
 class PendingState implements OrderState {
   constructor(private stateManager: StateManager) {}
 
+  getOrderId(): string {
+    return this.stateManager.getOrderId();
+  }
+
   getName(): OrderEnum {
     return OrderEnum.PENDING;
   }
