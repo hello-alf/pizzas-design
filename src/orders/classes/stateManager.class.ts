@@ -28,17 +28,24 @@ class StateManager {
 
   async setState(state: OrderState, orderId?: string): Promise<any> {
     let order = {};
-    if (orderId !== undefined && orderId !== null) {
-      order = await this.orderRepository.findOneById(orderId);
 
-      if (order === null) {
-        throw new BadRequestException(`La orden ${orderId} no existe`);
-      }
+    if (orderId !== undefined && orderId !== null) {
+      order = await this.findOrderAndValidate(orderId);
     }
 
     this.orderState = state;
     this.nameState = this.orderState.getName();
     this.orderId = orderId;
+
+    return order;
+  }
+
+  private async findOrderAndValidate(orderId: string): Promise<any> {
+    const order = await this.orderRepository.findOneById(orderId);
+
+    if (!order) {
+      throw new BadRequestException(`La orden ${orderId} no existe`);
+    }
 
     return order;
   }
