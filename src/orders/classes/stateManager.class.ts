@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { OrderState } from '../interface/orderState.interface';
 import PendingState from './pendingState.class';
 import OrderEnum from '../enums/orderEnum.enum';
-import { OrderRepository } from '../repository/order.repository';
+import { OrderRepository } from '../repositories/order.repository';
 
 @Injectable()
 class StateManager {

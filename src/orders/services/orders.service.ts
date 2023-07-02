@@ -7,7 +7,7 @@ import { CreateOrderDto } from '../dtos/order.dtos';
 import { OrderIdentifierDto } from '../dtos/orderIdentifier.dtos';
 import StateManager from '../classes/stateManager.class';
 import OrderEnum from '../enums/orderEnum.enum';
-import { OrderRepository } from '../repository/order.repository';
+import { OrderRepository } from '../repositories/order.repository';
 import { OrdersStateService } from './orders-state.service';
 
 @Injectable()
