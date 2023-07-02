@@ -9,6 +9,7 @@ import { environments } from './environments';
 import { OrdersModule } from './orders/orders.module';
 import { MenuModule } from './menu/menu.module';
 import config from './config';
+import { DatabaseInitializer } from './database/initialize';
 
 @Module({
   imports: [
@@ -22,6 +23,6 @@ import config from './config';
     MenuModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, DatabaseInitializer],
 })
 export class AppModule {}

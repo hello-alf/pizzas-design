@@ -9,6 +9,10 @@ import { CreatePizzaDto } from '../dtos/pizza.dtos';
 export class MenuService {
   constructor(@InjectModel(Pizza.name) private pizzaModel: Model<Pizza>) {}
 
+  findAll() {
+    return this.pizzaModel.find().exec();
+  }
+
   createPizza(data: CreatePizzaDto) {
     const newPizza = new this.pizzaModel(data);
     return newPizza.save();

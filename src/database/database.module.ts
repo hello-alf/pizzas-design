@@ -3,6 +3,7 @@ import { ConfigType } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongoClient } from 'mongodb';
 import config from '../config';
+import { Pizza, PizzaSchema } from '../menu/entities/pizza.entity';
 
 @Global()
 @Module({
@@ -20,6 +21,12 @@ import config from '../config';
       },
       inject: [config.KEY],
     }),
+    MongooseModule.forFeature([
+      {
+        name: Pizza.name,
+        schema: PizzaSchema,
+      },
+    ]),
   ],
   providers: [
     {
