@@ -35,13 +35,15 @@ export class OrdersService {
 
     const total = await this.calculatePrice(data.customized, data.details);
 
-    const { modifiedProducts, customizedProducts } =
-      await this.applyPromoStrategy(data.details, data.customized);
+    const details = await this.applyPromoStrategy(
+      data.details,
+      data.customized,
+    );
 
     const newOrder = await this.orderRepository.save({
       ...data,
-      details: modifiedProducts,
-      customized: customizedProducts,
+      details: details.modifiedProducts,
+      customized: details.customizedProducts,
       deliveryPrice,
       discount: 0,
       state: this.stateManager.getNameState(),
