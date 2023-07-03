@@ -28,6 +28,8 @@ $ npm run start:dev
 
 # Endpoints
 
+## Menu
+
 ### Listar Pizzas
 
 #### Request
@@ -81,6 +83,13 @@ $ npm run start:dev
 | ------ | ----------------------------- | -------------------------------- |
 | GET    | `http://localhost:3000/pizza` | `Content-Type: application/json` |
 
+| Parámetro    | Descripción                                   |
+| ------------ | --------------------------------------------- |
+| name         | Nombre de la Pizza                            |
+| size         | Tamaño de la Pizza (Pequeña, Mediana, Grande) |
+| unitPrice    | Precio unitario en Bs                         |
+| Ingredientes | Array de strings de ingredientes              |
+
 #### Payload
 
 ```json
@@ -94,7 +103,7 @@ $ npm run start:dev
 
 #### Response
 
-```json
+```http
 HTTP/1.1 201 Created
 X-Powered-By: Express
 Content-Type: application/json; charset=utf-8
@@ -113,4 +122,65 @@ Connection: close
   "_id": "64a219a0825a90106ff70a8b",
   "__v": 0
 }
+```
+
+## Ordenes
+
+### Listar Ordenes
+
+#### Request
+
+| Método | URL                           | Headers                          |
+| ------ | ----------------------------- | -------------------------------- |
+| GET    | `http://localhost:3000/order` | `Content-Type: application/json` |
+
+#### Response
+
+```json
+[
+  {
+    "_id": "64a1a698f168c86387ef4e0b",
+    "totalPrice": 120,
+    "discount": 0,
+    "deliveryPrice": 15,
+    "fullNameCustomer": "Juan Perez",
+    "details": [
+      {
+        "pizza": {
+          "_id": "64a1a41f18c2d48cd1154cd0",
+          "name": "Pizza Hawaiana",
+          "size": "Mediana",
+          "ingredients": ["Piña", "Queso", "Jamon"]
+        },
+        "quantity": 2
+      }
+    ],
+    "state": "Pagado",
+    "createdAt": "2023-07-02T16:28:49.970Z",
+    "updatedAt": "2023-07-02T16:28:49.970Z",
+    "__v": 0
+  },
+  {
+    "_id": "64a1f5e5bc42da5b4a4197be",
+    "totalPrice": 120,
+    "discount": 10,
+    "deliveryPrice": 15,
+    "fullNameCustomer": "Juan Perez",
+    "details": [
+      {
+        "pizza": {
+          "_id": "64a1a41f18c2d48cd1154cd0",
+          "name": "Pizza Hawaiana",
+          "size": "Mediana",
+          "ingredients": ["Piña", "Queso", "Jamon"]
+        },
+        "quantity": 2
+      }
+    ],
+    "state": "Pendiente",
+    "createdAt": "2023-07-02T22:10:23.448Z",
+    "updatedAt": "2023-07-02T22:10:23.448Z",
+    "__v": 0
+  }
+]
 ```
