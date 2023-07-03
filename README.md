@@ -81,14 +81,14 @@ $ npm run start:dev
 
 | Método | URL                           | Headers                          |
 | ------ | ----------------------------- | -------------------------------- |
-| GET    | `http://localhost:3000/pizza` | `Content-Type: application/json` |
+| POST   | `http://localhost:3000/pizza` | `Content-Type: application/json` |
 
-| Parámetro    | Descripción                                   |
-| ------------ | --------------------------------------------- |
-| name         | Nombre de la Pizza                            |
-| size         | Tamaño de la Pizza (Pequeña, Mediana, Grande) |
-| unitPrice    | Precio unitario en Bs                         |
-| Ingredientes | Array de strings de ingredientes              |
+| Parámetro   | Descripción                                   |
+| ----------- | --------------------------------------------- |
+| name        | Nombre de la Pizza                            |
+| size        | Tamaño de la Pizza (Pequeña, Mediana, Grande) |
+| unitPrice   | Precio unitario en Bs                         |
+| ingredients | Array de strings de ingredientes              |
 
 #### Payload
 
@@ -183,4 +183,72 @@ Connection: close
     "__v": 0
   }
 ]
+```
+
+### Crear Orden
+
+| Método | URL                           | Headers                          |
+| ------ | ----------------------------- | -------------------------------- |
+| POST   | `http://localhost:3000/order` | `Content-Type: application/json` |
+
+| Parámetro        | Descripción                                    |
+| ---------------- | ---------------------------------------------- |
+| fullNameCustomer | Nombre completo del cliente                    |
+| details          | Array de detalles de la orden, Objetos Details |
+
+Objeto Details
+
+| Parámetro | Descripción                                                  |
+| --------- | ------------------------------------------------------------ |
+| pizza     | Identificador de la pizza, obtenido en el servicio GET /menu |
+| quantity  | Cantidad de pizzas seleccionadas                             |
+
+#### Payload
+
+```json
+{
+  "fullNameCustomer": "Juan Perez",
+  "details": [
+    {
+      "pizza": "64a1a41f18c2d48cd1154cd0",
+      "quantity": 2
+    }
+  ]
+}
+```
+
+- Como parte de los puntos a solucionar, cuando se aplique el delivery gratuito el campo deliveryPrice del Response sera igual a cero
+- Además para los días 2x1, el detalle de pizzas ordenadas se duplicara, si quantity es 2 en el Response quantity será 4 manteniendo el precio del calculo para la cantidad original
+
+#### Response
+
+```http
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 372
+ETag: W/"174-kP+KVwpaJa/YByG3eTxiUJhcL68"
+Date: Mon, 03 Jul 2023 00:24:36 GMT
+Connection: close
+
+{
+	"totalPrice": 100,
+	"discount": 0,
+	"deliveryPrice": 14,
+	"fullNameCustomer": "Juan Perez",
+	"details": [{
+		"pizza": {
+			"_id": "64a1a41f18c2d48cd1154cd0",
+			"name": "Pizza Hawaiana",
+			"size": "Mediana",
+			"ingredients": ["Piña", "Queso", "Jamon"]
+		},
+		"quantity": 2
+	}],
+	"state": "Pendiente",
+	"createdAt": "2023-07-03T00:24:29.549Z",
+	"updatedAt": "2023-07-03T00:24:29.549Z",
+	"_id": "64a21544a54e35bfb89b0628",
+	"__v": 0
+}
 ```
