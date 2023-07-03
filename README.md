@@ -252,3 +252,99 @@ Connection: close
 	"__v": 0
 }
 ```
+
+### Pagar Orden
+
+| Método | URL                               | Headers                          |
+| ------ | --------------------------------- | -------------------------------- |
+| POST   | `http://localhost:3000/order/pay` | `Content-Type: application/json` |
+
+| Parámetro | Descripción               |
+| --------- | ------------------------- |
+| order     | Identificador de la orden |
+
+#### Payload
+
+```json
+{
+  "order": "64a22047fd7d1d6e0acd099c"
+}
+```
+
+#### Response
+
+```http
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 279
+ETag: W/"117-ABIu0Ai61RIfKaPNNMsKA5P3jq8"
+Date: Mon, 03 Jul 2023 01:27:13 GMT
+Connection: close
+
+{
+  "_id": "64a22047fd7d1d6e0acd099c",
+  "totalPrice": 100,
+  "discount": 0,
+  "deliveryPrice": 0,
+  "fullNameCustomer": "Juan Perez",
+  "details": [
+    {
+      "pizza": "64a1a41f18c2d48cd1154cd0",
+      "quantity": 4
+    }
+  ],
+  "state": "Pagado",
+  "createdAt": "2023-07-03T01:10:52.624Z",
+  "updatedAt": "2023-07-03T01:10:52.624Z",
+  "__v": 0
+}
+```
+
+### Cancelar Orden
+
+| Método | URL                                  | Headers                          |
+| ------ | ------------------------------------ | -------------------------------- |
+| POST   | `http://localhost:3000/order/cancel` | `Content-Type: application/json` |
+
+| Parámetro | Descripción               |
+| --------- | ------------------------- |
+| order     | Identificador de la orden |
+
+#### Payload
+
+```json
+{
+  "order": "64a22047fd7d1d6e0acd099c"
+}
+```
+
+#### Response
+
+```http
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 279
+ETag: W/"117-ABIu0Ai61RIfKaPNNMsKA5P3jq8"
+Date: Mon, 03 Jul 2023 01:27:13 GMT
+Connection: close
+
+{
+  "_id": "64a19ec7bdee0facfb9f357f",
+  "totalPrice": 120,
+  "discount": 0,
+  "deliveryPrice": 15,
+  "fullNameCustomer": "Juan Perez",
+  "details": [
+    {
+      "pizza": "649cc4dbc06e002847b36296",
+      "quantity": 2
+    }
+  ],
+  "state": "Cancelado",
+  "createdAt": "2023-07-02T15:58:47.119Z",
+  "updatedAt": "2023-07-02T15:58:47.119Z",
+  "__v": 0
+}
+```

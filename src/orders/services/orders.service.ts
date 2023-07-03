@@ -26,15 +26,11 @@ export class OrdersService {
   }
 
   async create(data: CreateOrderDto) {
-    this.deliveryService.setStrategy(new DeliveryStrategy());
-
-    const discount = 0;
-
-    const deliveryPrice = this.deliveryService.applyPromo();
-
     this.stateManager.pending();
 
-    const state = this.stateManager.getNameState();
+    this.deliveryService.setStrategy(new DeliveryStrategy());
+
+    const deliveryPrice = this.deliveryService.applyPromo();
 
     const totalPrice = await this.calculateOrderTotal(data.details);
 
@@ -46,8 +42,8 @@ export class OrdersService {
       ...data,
       details,
       deliveryPrice,
-      discount,
-      state,
+      discount: 0,
+      state: this.stateManager.getNameState(),
       totalPrice,
     });
 
