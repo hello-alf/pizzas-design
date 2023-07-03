@@ -9,7 +9,7 @@ export class PromoService {
     this.strategy = strategy;
   }
 
-  public modifyProducts(items) {
-    return this.strategy.modifyProducts(items);
+  public modifyProducts(items, customized) {
+    return this.strategy.modifyProducts(items, customized);
   }
 }

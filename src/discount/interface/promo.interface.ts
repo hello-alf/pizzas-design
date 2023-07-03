@@ -1,3 +1,3 @@
 export interface PromoStrategy {
-  modifyProducts(items: any): any;
+  modifyProducts(items: any, customized: any): any;
 }

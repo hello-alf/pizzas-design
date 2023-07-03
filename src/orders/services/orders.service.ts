@@ -1,5 +1,4 @@
 import { Injectable, Inject } from '@nestjs/common';
-
 import { CreateOrderDto } from '../dtos/order.dtos';
 import { OrderIdentifierDto } from '../dtos/orderIdentifier.dtos';
 import StateManager from '../classes/stateManager.class';
@@ -10,8 +9,8 @@ import { DeliveryService } from '../../discount/services/delivery.service';
 import { PromoService } from '../../discount/services/promo.service';
 import { DeliveryStrategy } from '../../discount/classes/delivery.strategy';
 import { BogoStrategy } from '../../discount/classes/bogo.strategy';
-import { PizzaRepository } from '../../menu/repositories/pizza.repository';
-import Size from '../../menu/enums/size.enum';
+import { RegularPizza } from '../classes/regularPizza.class';
+import { PersonalizedPizza } from '../classes/personalizedPizza.class';
 
 @Injectable()
 export class OrdersService {
@@ -19,9 +18,10 @@ export class OrdersService {
     @Inject(DeliveryService) private deliveryService: DeliveryService,
     @Inject(PromoService) private promoService: PromoService,
     @Inject(OrderRepository) private orderRepository: OrderRepository,
-    private pizzaRepository: PizzaRepository,
     private stateManager: StateManager,
     private ordersStateService: OrdersStateService,
+    private regularPizza: RegularPizza,
+    private personalizedPizza: PersonalizedPizza,
   ) {}
 
   findAll() {
@@ -33,21 +33,19 @@ export class OrdersService {
 
     const deliveryPrice = this.applyDeliveryStrategy();
 
-    const customizedTotalPrice = await this.calculateCustomizedOrderTotal(
-      data.customized,
-    );
+    const total = await this.calculatePrice(data.customized, data.details);
 
-    const totalMenuPrice = await this.calculateOrderTotal(data.details);
-
-    const details = this.applyPromoStrategy(data.details);
+    const { modifiedProducts, customizedProducts } =
+      await this.applyPromoStrategy(data.details, data.customized);
 
     const newOrder = await this.orderRepository.save({
       ...data,
-      details,
+      details: modifiedProducts,
+      customized: customizedProducts,
       deliveryPrice,
       discount: 0,
       state: this.stateManager.getNameState(),
-      totalPrice: totalMenuPrice + customizedTotalPrice,
+      totalPrice: total,
     });
 
     return newOrder;
@@ -82,60 +80,20 @@ export class OrdersService {
     return orderCancelled;
   }
 
-  async calculateOrderTotal(items: any[]) {
-    const totalPrice = await items.reduce(async (accumulator, item) => {
-      const itemBD = await this.pizzaRepository.findOneById(item.pizza);
+  async calculatePrice(customized, details) {
+    const customizedTotalPrice = await this.personalizedPizza.calculatePrice(
+      customized,
+    );
 
-      const itemPrice = itemBD.unitPrice * item.quantity;
+    const totalMenuPrice = await this.regularPizza.calculatePrice(details);
 
-      const accumulatedTotal = await accumulator;
-
-      return accumulatedTotal + itemPrice;
-    }, 0);
-    return totalPrice;
+    return customizedTotalPrice + totalMenuPrice;
   }
 
-  async calculateCustomizedOrderTotal(items: any[]) {
-    const totalPrice = items.reduce((accumulator, item) => {
-      const unitPrice = this.getRandomPrice(item.size);
-
-      const itemPrice = unitPrice * item.quantity;
-
-      const accumulatedTotal = accumulator;
-
-      return accumulatedTotal + itemPrice;
-    }, 0);
-    return totalPrice;
-  }
-
-  getRandomPrice(size: Size): number {
-    let minPrice: number;
-    let maxPrice: number;
-
-    switch (size) {
-      case Size.SMALL:
-        minPrice = 20;
-        maxPrice = 30;
-        break;
-      case Size.MEDIUM:
-        minPrice = 50;
-        maxPrice = 70;
-        break;
-      case Size.BIG:
-        minPrice = 90;
-        maxPrice = 120;
-        break;
-      default:
-        throw new Error('Invalid size');
-    }
-
-    return Math.floor(Math.random() * (maxPrice - minPrice + 1) + minPrice);
-  }
-
-  applyPromoStrategy(details) {
+  applyPromoStrategy(details, customized) {
     this.promoService.setStrategy(new BogoStrategy());
 
-    return this.promoService.modifyProducts(details);
+    return this.promoService.modifyProducts(details, customized);
   }
 
   applyDeliveryStrategy() {

@@ -9,6 +9,8 @@ import { OrderRepository } from './repositories/order.repository';
 import { OrdersStateService } from './services/orders-state.service';
 import { DiscountModule } from 'src/discount/discount.module';
 import { MenuModule } from 'src/menu/menu.module';
+import { RegularPizza } from './classes/regularPizza.class';
+import { PersonalizedPizza } from './classes/personalizedPizza.class';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { MenuModule } from 'src/menu/menu.module';
     { provide: StateManager, useClass: StateManager },
     OrderRepository,
     OrdersStateService,
+    RegularPizza,
+    PersonalizedPizza,
   ],
   controllers: [OrdersController],
 })
