@@ -3,6 +3,8 @@ import { DiscountStrategy } from '../interface/discount.interface';
 
 @Injectable()
 export class DeliveryStrategy implements DiscountStrategy {
+  private promoDays = [0, 4];
+
   getRandomNumber(): number {
     const min = 10;
     const max = 40;
@@ -11,6 +13,10 @@ export class DeliveryStrategy implements DiscountStrategy {
   }
 
   applyPromo(): number {
+    const today = new Date().getDay();
+    if (this.promoDays.includes(today)) {
+      return 0;
+    }
     return this.getRandomNumber();
   }
 }
