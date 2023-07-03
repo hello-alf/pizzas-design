@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { now, Document } from 'mongoose';
 import { Detail } from './detail.entity';
+import { Custom } from './custom.entity';
 
 @Schema()
 export class Order extends Document {
@@ -21,6 +22,9 @@ export class Order extends Document {
 
   @Prop({ type: Types.ObjectId, ref: Detail.name })
   details: Detail[];
+
+  @Prop({ required: true })
+  customized: Custom[];
 
   @Prop({ required: true })
   state: string;

@@ -10,6 +10,8 @@
 
 ## Instalación
 
+Se debe tener docker instalado
+
 ```bash
 # Instalar nestjs globalmente
 $ npm install -g @nestjs/cli
@@ -23,6 +25,10 @@ Una vez levantado el proyecto se pueden utilizar las pizzas creadas por default
 ## Correr aplicación
 
 ```bash
+# Levantar base de datos
+$ docker-compose up -d
+
+# Iniciar server
 $ npm run start:dev
 ```
 
@@ -191,10 +197,11 @@ Connection: close
 | ------ | ----------------------------- | -------------------------------- |
 | POST   | `http://localhost:3000/order` | `Content-Type: application/json` |
 
-| Parámetro        | Descripción                                    |
-| ---------------- | ---------------------------------------------- |
-| fullNameCustomer | Nombre completo del cliente                    |
-| details          | Array de detalles de la orden, Objetos Details |
+| Parámetro        | Descripción                                        |
+| ---------------- | -------------------------------------------------- |
+| fullNameCustomer | Nombre completo del cliente                        |
+| details          | Array de pizzas preestablecidas, Objetos Details   |
+| customized       | Array de pizzas personalizadas, Objetos Customized |
 
 Objeto Details
 
@@ -202,6 +209,14 @@ Objeto Details
 | --------- | ------------------------------------------------------------ |
 | pizza     | Identificador de la pizza, obtenido en el servicio GET /menu |
 | quantity  | Cantidad de pizzas seleccionadas                             |
+
+Objeto Customized
+
+| Parámetro   | Descripción                                   |
+| ----------- | --------------------------------------------- |
+| size        | Tamaño de la Pizza (Pequeña, Mediana, Grande) |
+| ingredients | Array de strings de ingredientes              |
+| quantity    | Cantidad de pizzas seleccionadas              |
 
 #### Payload
 
@@ -211,7 +226,14 @@ Objeto Details
   "details": [
     {
       "pizza": "64a1a41f18c2d48cd1154cd0",
-      "quantity": 2
+      "quantity": 1
+    }
+  ],
+  "customized": [
+    {
+      "size": "Grande",
+      "ingredients": ["Pollo", "Queso parmesano"],
+      "quantity": 1
     }
   ]
 }
@@ -232,24 +254,40 @@ Date: Mon, 03 Jul 2023 00:24:36 GMT
 Connection: close
 
 {
-	"totalPrice": 100,
-	"discount": 0,
-	"deliveryPrice": 14,
-	"fullNameCustomer": "Juan Perez",
-	"details": [{
-		"pizza": {
-			"_id": "64a1a41f18c2d48cd1154cd0",
-			"name": "Pizza Hawaiana",
-			"size": "Mediana",
-			"ingredients": ["Piña", "Queso", "Jamon"]
-		},
-		"quantity": 2
-	}],
-	"state": "Pendiente",
-	"createdAt": "2023-07-03T00:24:29.549Z",
-	"updatedAt": "2023-07-03T00:24:29.549Z",
-	"_id": "64a21544a54e35bfb89b0628",
-	"__v": 0
+  "totalPrice": 151,
+  "discount": 0,
+  "deliveryPrice": 34,
+  "fullNameCustomer": "Juan Perez",
+  "details": [
+    {
+      "pizza": {
+        "_id": "64a1a41f18c2d48cd1154cd0",
+        "name": "Pizza Hawaiana",
+        "size": "Mediana",
+        "ingredients": [
+          "Piña",
+          "Queso",
+          "Jamon"
+        ]
+      },
+      "quantity": 1
+    }
+  ],
+  "customized": [
+    {
+      "size": "Grande",
+      "ingredients": [
+        "Pollo",
+        "Queso parmesano"
+      ],
+      "quantity": 1
+    }
+  ],
+  "state": "Pendiente",
+  "createdAt": "2023-07-03T02:07:25.687Z",
+  "updatedAt": "2023-07-03T02:07:25.687Z",
+  "_id": "64a22d7322ac0a8637586cf0",
+  "__v": 0
 }
 ```
 

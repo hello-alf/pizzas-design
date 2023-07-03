@@ -1,7 +1,14 @@
-import { IsString, IsNotEmpty, IsArray, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsArray,
+  ValidateNested,
+  ValidateIf,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { CreateDetailDto } from './detail.dtos';
+import { CreateCustomizedDto } from './customized.dtos';
 
 export class CreateOrderDto {
   @IsString()
@@ -11,6 +18,7 @@ export class CreateOrderDto {
 
   @IsArray()
   @IsNotEmpty()
+  @ValidateIf((object) => !object.customized || object.customized.length === 0)
   @ValidateNested()
   @Type(() => CreateDetailDto)
   @ApiProperty({
@@ -18,4 +26,15 @@ export class CreateOrderDto {
     type: CreateDetailDto,
   })
   readonly details: CreateDetailDto[];
+
+  @IsArray()
+  @ValidateIf((object) => !object.details || object.details.length === 0)
+  @IsNotEmpty()
+  @ApiProperty({ description: 'customized items' })
+  @Type(() => CreateCustomizedDto)
+  @ApiProperty({
+    isArray: true,
+    type: CreateCustomizedDto,
+  })
+  readonly customized: CreateCustomizedDto[];
 }

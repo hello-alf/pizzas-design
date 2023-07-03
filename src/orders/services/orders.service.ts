@@ -11,6 +11,7 @@ import { PromoService } from '../../discount/services/promo.service';
 import { DeliveryStrategy } from '../../discount/classes/delivery.strategy';
 import { BogoStrategy } from '../../discount/classes/bogo.strategy';
 import { PizzaRepository } from '../../menu/repositories/pizza.repository';
+import Size from '../../menu/enums/size.enum';
 
 @Injectable()
 export class OrdersService {
@@ -32,7 +33,11 @@ export class OrdersService {
 
     const deliveryPrice = this.applyDeliveryStrategy();
 
-    const totalPrice = await this.calculateOrderTotal(data.details);
+    const customizedTotalPrice = await this.calculateCustomizedOrderTotal(
+      data.customized,
+    );
+
+    const totalMenuPrice = await this.calculateOrderTotal(data.details);
 
     const details = this.applyPromoStrategy(data.details);
 
@@ -42,7 +47,7 @@ export class OrdersService {
       deliveryPrice,
       discount: 0,
       state: this.stateManager.getNameState(),
-      totalPrice,
+      totalPrice: totalMenuPrice + customizedTotalPrice,
     });
 
     return newOrder;
@@ -88,6 +93,43 @@ export class OrdersService {
       return accumulatedTotal + itemPrice;
     }, 0);
     return totalPrice;
+  }
+
+  async calculateCustomizedOrderTotal(items: any[]) {
+    const totalPrice = items.reduce((accumulator, item) => {
+      const unitPrice = this.getRandomPrice(item.size);
+
+      const itemPrice = unitPrice * item.quantity;
+
+      const accumulatedTotal = accumulator;
+
+      return accumulatedTotal + itemPrice;
+    }, 0);
+    return totalPrice;
+  }
+
+  getRandomPrice(size: Size): number {
+    let minPrice: number;
+    let maxPrice: number;
+
+    switch (size) {
+      case Size.SMALL:
+        minPrice = 20;
+        maxPrice = 30;
+        break;
+      case Size.MEDIUM:
+        minPrice = 50;
+        maxPrice = 70;
+        break;
+      case Size.BIG:
+        minPrice = 90;
+        maxPrice = 120;
+        break;
+      default:
+        throw new Error('Invalid size');
+    }
+
+    return Math.floor(Math.random() * (maxPrice - minPrice + 1) + minPrice);
   }
 
   applyPromoStrategy(details) {
