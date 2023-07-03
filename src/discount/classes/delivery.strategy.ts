@@ -3,7 +3,7 @@ import { DiscountStrategy } from '../interface/discount.interface';
 
 @Injectable()
 export class DeliveryStrategy implements DiscountStrategy {
-  private promoDays = [0, 4];
+  private promoDays = [4];
 
   getRandomNumber(): number {
     const min = 10;

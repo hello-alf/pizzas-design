@@ -3,7 +3,7 @@ import { DiscountStrategy } from '../interface/discount.interface';
 
 @Injectable()
 export class BogoStrategy implements DiscountStrategy {
-  private promoDays = [0, 2, 3];
+  private promoDays = [2, 3];
 
   applyPromo(): number {
     return 0;

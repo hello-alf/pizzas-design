@@ -1,8 +1,5 @@
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Injectable, Inject } from '@nestjs/common';
 
-import { Order } from '../entities/order.entity';
 import { CreateOrderDto } from '../dtos/order.dtos';
 import { OrderIdentifierDto } from '../dtos/orderIdentifier.dtos';
 import StateManager from '../classes/stateManager.class';
@@ -10,14 +7,13 @@ import OrderEnum from '../enums/orderEnum.enum';
 import { OrderRepository } from '../repositories/order.repository';
 import { OrdersStateService } from './orders-state.service';
 import { DeliveryService } from '../../discount/services/delivery.service';
-import { DeliveryStrategy } from 'src/discount/classes/delivery.strategy';
-import { BogoStrategy } from 'src/discount/classes/bogo.strategy';
+import { DeliveryStrategy } from '../../discount/classes/delivery.strategy';
+import { BogoStrategy } from '../../discount/classes/bogo.strategy';
 import { PizzaRepository } from '../../menu/repositories/pizza.repository';
 
 @Injectable()
 export class OrdersService {
   constructor(
-    @InjectModel(Order.name) private orderModel: Model<Order>,
     @Inject(DeliveryService) private deliveryService: DeliveryService,
     @Inject(OrderRepository) private orderRepository: OrderRepository,
     private pizzaRepository: PizzaRepository,
