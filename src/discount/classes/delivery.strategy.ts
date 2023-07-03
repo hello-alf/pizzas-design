@@ -23,8 +23,4 @@ export class DeliveryStrategy implements DiscountStrategy {
 
     return this.getRandomNumber();
   }
-
-  modifyProducts(items): any {
-    return items;
-  }
 }

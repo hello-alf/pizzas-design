@@ -7,6 +7,7 @@ import OrderEnum from '../enums/orderEnum.enum';
 import { OrderRepository } from '../repositories/order.repository';
 import { OrdersStateService } from './orders-state.service';
 import { DeliveryService } from '../../discount/services/delivery.service';
+import { PromoService } from '../../discount/services/promo.service';
 import { DeliveryStrategy } from '../../discount/classes/delivery.strategy';
 import { BogoStrategy } from '../../discount/classes/bogo.strategy';
 import { PizzaRepository } from '../../menu/repositories/pizza.repository';
@@ -15,6 +16,7 @@ import { PizzaRepository } from '../../menu/repositories/pizza.repository';
 export class OrdersService {
   constructor(
     @Inject(DeliveryService) private deliveryService: DeliveryService,
+    @Inject(PromoService) private promoService: PromoService,
     @Inject(OrderRepository) private orderRepository: OrderRepository,
     private pizzaRepository: PizzaRepository,
     private stateManager: StateManager,
@@ -28,15 +30,11 @@ export class OrdersService {
   async create(data: CreateOrderDto) {
     this.stateManager.pending();
 
-    this.deliveryService.setStrategy(new DeliveryStrategy());
-
-    const deliveryPrice = this.deliveryService.applyPromo();
+    const deliveryPrice = this.applyDeliveryStrategy();
 
     const totalPrice = await this.calculateOrderTotal(data.details);
 
-    this.deliveryService.setStrategy(new BogoStrategy());
-
-    const details = this.deliveryService.modifyProducts(data.details);
+    const details = this.applyPromoStrategy(data.details);
 
     const newOrder = await this.orderRepository.save({
       ...data,
@@ -90,5 +88,17 @@ export class OrdersService {
       return accumulatedTotal + itemPrice;
     }, 0);
     return totalPrice;
+  }
+
+  applyPromoStrategy(details) {
+    this.promoService.setStrategy(new BogoStrategy());
+
+    return this.promoService.modifyProducts(details);
+  }
+
+  applyDeliveryStrategy() {
+    this.deliveryService.setStrategy(new DeliveryStrategy());
+
+    return this.deliveryService.applyPromo();
   }
 }

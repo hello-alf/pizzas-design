@@ -1,13 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { DiscountStrategy } from '../interface/discount.interface';
+import { PromoStrategy } from '../interface/promo.interface';
 
 @Injectable()
-export class BogoStrategy implements DiscountStrategy {
+export class BogoStrategy implements PromoStrategy {
   private promoDays = [2, 3];
-
-  applyPromo(): number {
-    return 0;
-  }
 
   modifyProducts(items): any {
     let modifiedProducts = items;
