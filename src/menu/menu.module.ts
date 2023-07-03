@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Pizza, PizzaSchema } from './entities/pizza.entity';
 import { MenuController } from './controller/menu.controller';
 import { MenuService } from './services/menu.service';
+import { PizzaRepository } from './repositories/pizza.repository';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { MenuService } from './services/menu.service';
     ]),
   ],
   controllers: [MenuController],
-  providers: [MenuService],
+  providers: [MenuService, PizzaRepository],
+  exports: [PizzaRepository],
 })
 export class MenuModule {}

@@ -8,7 +8,9 @@ import StateManager from './classes/stateManager.class';
 import { OrderRepository } from './repositories/order.repository';
 import { OrdersStateService } from './services/orders-state.service';
 import { DiscountModule } from 'src/discount/discount.module';
+import { MenuModule } from 'src/menu/menu.module';
 // import { DeliveryService } from 'src/discount/services/delivery.service';
+// import { PizzaRepository } from '../menu/repositories/pizza.repository';
 
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { DiscountModule } from 'src/discount/discount.module';
       },
     ]),
     DiscountModule,
+    MenuModule,
   ],
   providers: [
     OrdersService,

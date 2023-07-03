@@ -11,13 +11,15 @@ import { OrderRepository } from '../repositories/order.repository';
 import { OrdersStateService } from './orders-state.service';
 import { DeliveryService } from '../../discount/services/delivery.service';
 import { DeliveryStrategy } from 'src/discount/classes/delivery.strategy';
+import { PizzaRepository } from '../../menu/repositories/pizza.repository';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectModel(Order.name) private orderModel: Model<Order>,
     @Inject(DeliveryService) private deliveryService: DeliveryService,
-    private orderRepository: OrderRepository,
+    @Inject(OrderRepository) private orderRepository: OrderRepository,
+    private pizzaRepository: PizzaRepository,
     private stateManager: StateManager,
     private ordersStateService: OrdersStateService,
   ) {}
@@ -26,7 +28,7 @@ export class OrdersService {
     return this.orderRepository.find();
   }
 
-  create(data: CreateOrderDto) {
+  async create(data: CreateOrderDto) {
     this.deliveryService.setStrategy(new DeliveryStrategy());
 
     const discount = 0;
@@ -34,11 +36,12 @@ export class OrdersService {
     const deliveryPrice = this.deliveryService.applyPromo();
 
     this.stateManager.pending();
+
     const state = this.stateManager.getNameState();
 
-    const totalPrice = 120;
+    const totalPrice = await this.calculateOrderTotal(data.details);
 
-    const newOrder = new this.orderModel({
+    const newOrder = await this.orderRepository.save({
       ...data,
       deliveryPrice,
       discount,
@@ -46,7 +49,7 @@ export class OrdersService {
       totalPrice,
     });
 
-    return newOrder.save();
+    return newOrder;
   }
 
   async pay(data: OrderIdentifierDto) {
@@ -78,7 +81,16 @@ export class OrdersService {
     return orderCancelled;
   }
 
-  calculateOrderTotal(): number {
-    return 0;
+  async calculateOrderTotal(items: any[]) {
+    const totalPrice = await items.reduce(async (accumulator, item) => {
+      const itemBD = await this.pizzaRepository.findOneById(item.pizza);
+
+      const itemPrice = itemBD.unitPrice * item.quantity;
+
+      const accumulatedTotal = await accumulator;
+
+      return accumulatedTotal + itemPrice;
+    }, 0);
+    return totalPrice;
   }
 }
