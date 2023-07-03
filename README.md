@@ -1,73 +1,116 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Introducción
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+- Se utilizo NestJS como framework para completar los puntos asignados en la tarea
+- Se utilizo MongoDB como base de datos donde se almacenan las Pizzas y las Ordenes generados mediante los endpoints
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Patrones de Diseño aplicados
 
-## Description
+- State.- Para manejo de estados, Pendiente, Pagado, Cancelado
+- Strategy.- Para manejo de promociones 2x1 y Delivery
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
+## Instalación
 
 ```bash
+# Instalar nestjs globalmente
+$ npm install -g @nestjs/cli
+
+# Instalar las dependencias del proyecto
 $ npm install
 ```
 
-## Running the app
+Una vez levantado el proyecto se pueden utilizar las pizzas creadas por default
+
+## Correr aplicación
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
 $ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
-## Test
+# Endpoints
 
-```bash
-# unit tests
-$ npm run test
+### Listar Pizzas
 
-# e2e tests
-$ npm run test:e2e
+#### Request
 
-# test coverage
-$ npm run test:cov
+| Método | URL                          | Headers                          |
+| ------ | ---------------------------- | -------------------------------- |
+| GET    | `http://localhost:3000/menu` | `Content-Type: application/json` |
+
+#### Response
+
+```json
+[
+  {
+    "_id": "64a1a41f18c2d48cd1154cce",
+    "name": "Pizza Hawaiana",
+    "size": "Pequeña",
+    "ingredients": ["Piña", "Queso", "Jamon"],
+    "unitPrice": 25,
+    "createdAt": "2023-07-02T16:21:50.945Z",
+    "updatedAt": "2023-07-02T16:21:50.945Z",
+    "__v": 0
+  },
+  {
+    "_id": "64a1a41f18c2d48cd1154cd2",
+    "name": "Pizza Hawaiana",
+    "size": "Grande",
+    "ingredients": ["Piña", "Queso", "Jamon"],
+    "unitPrice": 85,
+    "createdAt": "2023-07-02T16:21:50.945Z",
+    "updatedAt": "2023-07-02T16:21:50.945Z",
+    "__v": 0
+  },
+  {
+    "_id": "64a1a41f18c2d48cd1154cd4",
+    "name": "Pizza Carnivora",
+    "size": "Pequeña",
+    "ingredients": ["Carne molida", "Tocino", "Jamon", "Queso"],
+    "unitPrice": 30,
+    "createdAt": "2023-07-02T16:21:50.945Z",
+    "updatedAt": "2023-07-02T16:21:50.945Z",
+    "__v": 0
+  }
+]
 ```
 
-## Support
+### Crear Pizza
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+#### Request
 
-## Stay in touch
+| Método | URL                           | Headers                          |
+| ------ | ----------------------------- | -------------------------------- |
+| GET    | `http://localhost:3000/pizza` | `Content-Type: application/json` |
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+#### Payload
 
-## License
+```json
+{
+  "name": "Pizza Hawaiana",
+  "size": "Grande",
+  "unitPrice": 90,
+  "ingredients": ["Piña", "Queso", "Jamon"]
+}
+```
 
-Nest is [MIT licensed](LICENSE).
+#### Response
+
+```json
+HTTP/1.1 201 Created
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 215
+ETag: W/"d7-rHMnPE7LAsxiOtq3BI0/RdJCWsM"
+Date: Mon, 03 Jul 2023 00:43:12 GMT
+Connection: close
+
+{
+  "name": "Pizza Hawaiana",
+  "size": "Grande",
+  "ingredients": ["Piña", "Queso", "Jamon"],
+  "unitPrice": 90,
+  "createdAt": "2023-07-03T00:37:16.614Z",
+  "updatedAt": "2023-07-03T00:37:16.614Z",
+  "_id": "64a219a0825a90106ff70a8b",
+  "__v": 0
+}
+```
