@@ -14,9 +14,15 @@ export class DeliveryStrategy implements DiscountStrategy {
 
   applyPromo(): number {
     const today = new Date().getDay();
+
     if (this.promoDays.includes(today)) {
       return 0;
     }
+
     return this.getRandomNumber();
+  }
+
+  modifyProducts(items): any {
+    return items;
   }
 }

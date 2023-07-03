@@ -12,4 +12,8 @@ export class DeliveryService {
   public applyPromo() {
     return this.strategy.applyPromo();
   }
+
+  public modifyProducts(items) {
+    return this.strategy.modifyProducts(items);
+  }
 }

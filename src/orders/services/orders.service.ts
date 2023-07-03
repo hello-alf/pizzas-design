@@ -11,6 +11,7 @@ import { OrderRepository } from '../repositories/order.repository';
 import { OrdersStateService } from './orders-state.service';
 import { DeliveryService } from '../../discount/services/delivery.service';
 import { DeliveryStrategy } from 'src/discount/classes/delivery.strategy';
+import { BogoStrategy } from 'src/discount/classes/bogo.strategy';
 import { PizzaRepository } from '../../menu/repositories/pizza.repository';
 
 @Injectable()
@@ -41,8 +42,13 @@ export class OrdersService {
 
     const totalPrice = await this.calculateOrderTotal(data.details);
 
+    this.deliveryService.setStrategy(new BogoStrategy());
+
+    const details = this.deliveryService.modifyProducts(data.details);
+
     const newOrder = await this.orderRepository.save({
       ...data,
+      details,
       deliveryPrice,
       discount,
       state,
